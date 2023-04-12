@@ -23,8 +23,8 @@ public class CitaController {
     }
 
     @GetMapping("/lista")
-    public ResponseEntity<List<Cita>> lista(){
-        List<Cita> citas = citaService.listaCitas();
+    public ResponseEntity<List<CitaDTO>> lista(){
+        List<CitaDTO> citas = citaService.listaCitas();
         return ResponseEntity.ok(citas);
     }
 
@@ -42,9 +42,7 @@ public class CitaController {
 
     @GetMapping("/{id}")
     public ResponseEntity buscar(@PathVariable Long id){
-        Cita cita = citaService.buscarCita(id);
-        return ResponseEntity.ok(cita);
+        CitaDTO citaDTO = citaService.buscarCita(id);
+        return ResponseEntity.ok(citaDTO);
     }
-    //Eliminar
-    //Actualizar
 }

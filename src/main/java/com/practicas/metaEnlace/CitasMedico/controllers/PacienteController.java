@@ -33,13 +33,13 @@ public class PacienteController {
     }
 
     @GetMapping("/lista")
-    public ResponseEntity<List<Paciente>> lista(){
-        List<Paciente> pacientes = pacienteService.listaPacientes();
+    public ResponseEntity<List<PacienteDTO>> lista(){
+        List<PacienteDTO> pacientes = pacienteService.listaPacientes();
         return ResponseEntity.ok(pacientes);
     }
     @GetMapping("/{usuario}")
     public ResponseEntity buscar(@PathVariable String usuario){
-        Paciente paciente = pacienteService.buscar(usuario);
-        return ResponseEntity.ok(paciente);
+        PacienteDTO pacienteDTO = pacienteService.buscar(usuario);
+        return ResponseEntity.ok(pacienteDTO);
     }
 }

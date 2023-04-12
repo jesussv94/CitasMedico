@@ -30,7 +30,7 @@ public class PacienteService {
     private CitaRepository citaRepository;
 
     public Paciente insertarPaciente(PacienteDTO pacienteDTO) {
-
+        //Validaciones
         //Posibilidad de meterlo en directorio utils
         List<Medico> medicos = new ArrayList<>();
         List<Cita> citas = new ArrayList<>();
@@ -70,16 +70,6 @@ public class PacienteService {
             pacienteDTO.setCitasId(new ArrayList<>());
         }
 
-        if(pacienteDTO.getCitasId().contains(citas)){
-            for(Long citasId : pacienteDTO.getCitasId()){
-                Optional<Cita> citaOpt = citaRepository.findById(citasId);
-            }
-        }
-        if(pacienteDTO.getMedicosId().contains(medicos)){
-            for(Long medicoId : pacienteDTO.getMedicosId()){
-                Optional<Medico> medicoOpt = medicoRepository.findById(medicoId);
-            }
-        }
         Paciente paciente = pacienteMapper.toPaciente(pacienteDTO);
         paciente.setMedicos(medicos);
         paciente.setCitas(citas);
@@ -87,12 +77,24 @@ public class PacienteService {
         return pacienteRepository.save(paciente);
     }
 
-    public List<Paciente> listaPacientes(){
-        return pacienteRepository.findAll();
+    public List<PacienteDTO> listaPacientes(){
+        List<PacienteDTO> lista = new ArrayList<>();
+        Iterable<Paciente> listaPacientes = pacienteRepository.findAll();
+        for(Paciente paciente : listaPacientes){
+            PacienteDTO pacienteDTO = pacienteMapper.toPacienteDTO(paciente);
+            lista.add(pacienteDTO);
+        }
+        return lista;
     }
-    public Paciente buscar(String usuario){
-        return pacienteRepository.findByUsuario(usuario).orElse(null);
+
+    public PacienteDTO buscar(String usuario){
+        Paciente paciente = pacienteRepository.findByUsuario(usuario).orElse(null);
+        if(paciente == null){
+            throw new DataNotFoundException("Paciente no encontrado");
+        }
+        return pacienteMapper.toPacienteDTO(paciente);
     }
+
     public void eliminar(Long id){
         Optional<Paciente> pacienteopt = pacienteRepository.findById(id);
         if(pacienteopt.isEmpty()){

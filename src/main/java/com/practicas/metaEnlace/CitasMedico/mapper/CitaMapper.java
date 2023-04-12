@@ -10,5 +10,9 @@ import org.mapstruct.factory.Mappers;
 public interface CitaMapper {
     CitaMapper INSTANCE = Mappers.getMapper(CitaMapper.class);
     Cita toCita(CitaDTO citaDTO);
+    @Mapping(source = "paciente.id", target = "pacienteId")
+    @Mapping(source = "medico.id", target = "medicoId")
+    @Mapping(source = "diagnostico.id", target = "diagnosticoId")
+
     CitaDTO toCitaDTO(Cita cita);
 }

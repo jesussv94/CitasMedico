@@ -38,15 +38,21 @@ public class MedicoController {
 
     // Lista de médicos:
     @GetMapping("/lista")
-    public ResponseEntity<List<Medico>> lista(){
-        List<Medico> medicos = medicoService.listaMedicos();
+    public ResponseEntity<List<MedicoDTO>> lista(){
+        List<MedicoDTO> medicos = medicoService.listaMedicos();
         return ResponseEntity.ok(medicos);
     }
 
     // Buscar médico por usuario
     @GetMapping("/{usuario}")
-    public ResponseEntity<Medico> buscar(@PathVariable String usuario){
-        Medico medico = medicoService.buscarMedico(usuario);
+    public ResponseEntity<MedicoDTO> buscar(@PathVariable String usuario){
+        MedicoDTO medico = medicoService.buscarMedico(usuario);
+        return ResponseEntity.ok(medico);
+    }
+
+    @GetMapping("/buscar/{id}")
+    public ResponseEntity<MedicoDTO> buscarId(@PathVariable long id){
+        MedicoDTO medico = medicoService.buscarMedicoId(id);
         return ResponseEntity.ok(medico);
     }
 }

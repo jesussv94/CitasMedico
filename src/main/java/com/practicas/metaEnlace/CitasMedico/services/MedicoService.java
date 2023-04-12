@@ -39,29 +39,33 @@ public class MedicoService {
             medicoDTO.setCitasId(new ArrayList<>());
         }
 
-        if(medicoDTO.getPacientesId().contains(pacientes)){
-            for(Long pacienteId: medicoDTO.getPacientesId()){
-                Optional<Paciente> pacienteopt = pacienteRepository.findById(pacienteId);
-                pacienteopt.ifPresent(pacientes::add);
-            }
-        }
-        if(medicoDTO.getCitasId().contains((citas))){
-            for (Long CitasId: medicoDTO.getCitasId()){
-                Optional<Cita> citaOpt = citaRepository.findById(CitasId);
-                citaOpt.ifPresent(citas::add);
-            }
-        }
-
         Medico medico = medicoMapper.toMedico(medicoDTO);
         medico.setPacientes(pacientes);
         medico.setCitas(citas);
         return medicoRepository.save(medico);
     }
-    public List<Medico> listaMedicos() {
-        return medicoRepository.findAll();
+    public List<MedicoDTO> listaMedicos() {
+        List<MedicoDTO> lista = new ArrayList<>();
+        Iterable<Medico> listaMedicos = medicoRepository.findAll();
+        for(Medico medico : listaMedicos){
+            MedicoDTO medicoDTO = medicoMapper.toMedicoDTO(medico);
+            lista.add(medicoDTO);
+        }
+        return lista;
     }
-    public Medico buscarMedico(String usuario) {
-        return medicoRepository.findByUsuario(usuario).orElse(null);
+    public MedicoDTO buscarMedico(String usuario) {
+        Medico medico = medicoRepository.findByUsuario(usuario).orElse(null);
+        if(medico == null){
+            throw new DataNotFoundException("Médico no encontrado");
+        }
+        return medicoMapper.toMedicoDTO(medico);
+    }
+    public MedicoDTO buscarMedicoId(long id){
+        Medico medico = medicoRepository.findById(id).orElse(null);
+        if(medico == null){
+            throw new DataNotFoundException("Médico no encontrado");
+        }
+        return medicoMapper.toMedicoDTO(medico);
     }
 
     //Editar médico
