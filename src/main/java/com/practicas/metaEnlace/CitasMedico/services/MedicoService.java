@@ -10,6 +10,7 @@ import com.practicas.metaEnlace.CitasMedico.repositories.CitaRepository;
 import com.practicas.metaEnlace.CitasMedico.repositories.MedicoRepository;
 import com.practicas.metaEnlace.CitasMedico.repositories.PacienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -39,7 +40,11 @@ public class MedicoService {
             medicoDTO.setCitasId(new ArrayList<>());
         }
 
+        //Codificado de la clave
+        String pass = new BCryptPasswordEncoder().encode(medicoDTO.getClave());
+
         Medico medico = medicoMapper.toMedico(medicoDTO);
+        medico.setClave(pass);
         medico.setPacientes(pacientes);
         medico.setCitas(citas);
         return medicoRepository.save(medico);

@@ -22,7 +22,6 @@ public class DiagnosticoService {
     private CitaRepository citaRepository;
 
     public Diagnostico insertar(DiagnosticoDTO diagnosticoDTO){
-        //Busca la id de la cita
         Optional<Cita> cita = citaRepository.findById(diagnosticoDTO.getCitaId());
         if(cita.isEmpty()){
             throw new DataNotFoundException("Cita no encontrada");
