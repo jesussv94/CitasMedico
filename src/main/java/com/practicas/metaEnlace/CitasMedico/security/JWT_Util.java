@@ -1,10 +1,5 @@
 package com.practicas.metaEnlace.CitasMedico.security;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -32,13 +27,6 @@ public class JWT_Util {
                 .addClaims(extra)
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
                 .compact();
-        /*
-        return JWT.create()
-                .withSubject("user")
-                .withClaim("username", username)
-                .withIssuedAt(new Date())
-                .sign(Algorithm.HMAC256(secret));
-        */
     }
     public static UsernamePasswordAuthenticationToken authenticationToken(String token){
         try{
@@ -54,13 +42,4 @@ public class JWT_Util {
             return null;
         }
     }
-    /*
-    public String validarToken(String token) throws JWTVerificationException {
-        JWTVerifier validar = JWT.require(Algorithm.HMAC256(secret))
-                .withSubject("user")
-                .build();
-        DecodedJWT decode = validar.verify(token);
-        return decode.getClaim("username").asString();
-      }*/
-
 }

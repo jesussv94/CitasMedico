@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/medico")
+@RequestMapping("api/medico")
 public class MedicoController {
     @Autowired
     private MedicoService medicoService;
@@ -19,21 +19,21 @@ public class MedicoController {
     @PostMapping
     public ResponseEntity insertar(@RequestBody MedicoDTO medicoDTO){
         medicoService.insertarMedico(medicoDTO);
-        return ResponseEntity.ok("Medico insertado");
+        return ResponseEntity.ok("200");
     }
 
     // Actualizar Médico:
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     ResponseEntity editar(@RequestBody MedicoDTO medicoDTO, @PathVariable Long id){
         medicoService.editar(id, medicoDTO);
-        return ResponseEntity.ok("Médico editado");
+        return ResponseEntity.ok("200");
     }
 
     // Borrar Médico:
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     ResponseEntity eliminar(@PathVariable Long id){
         medicoService.eliminar(id);
-        return ResponseEntity.ok("Médico eliminado");
+        return ResponseEntity.ok("200");
     }
 
     // Lista de médicos:
@@ -50,7 +50,7 @@ public class MedicoController {
         return ResponseEntity.ok(medico);
     }
 
-    @GetMapping("/buscar/{id}")
+    @GetMapping("/search/{id}")
     public ResponseEntity<MedicoDTO> buscarId(@PathVariable long id){
         MedicoDTO medico = medicoService.buscarMedicoId(id);
         return ResponseEntity.ok(medico);

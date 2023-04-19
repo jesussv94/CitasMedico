@@ -1,5 +1,6 @@
 package com.practicas.metaEnlace.CitasMedico.controllers;
 
+import com.practicas.metaEnlace.CitasMedico.dto.MedicoDTO;
 import com.practicas.metaEnlace.CitasMedico.dto.PacienteDTO;
 import com.practicas.metaEnlace.CitasMedico.entities.Paciente;
 import com.practicas.metaEnlace.CitasMedico.services.PacienteService;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/paciente")
+@RequestMapping("api/paciente")
 public class PacienteController {
 
     @Autowired
@@ -19,17 +20,17 @@ public class PacienteController {
     @PostMapping
     public ResponseEntity insertar(@RequestBody PacienteDTO pacienteDTO){
         pacienteService.insertarPaciente(pacienteDTO);
-        return ResponseEntity.ok("Paciente insertado");
+        return ResponseEntity.ok("200");
     }
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity editar(@RequestBody PacienteDTO pacienteDTO, @PathVariable Long id){
         pacienteService.editarPaciente(id, pacienteDTO);
-        return ResponseEntity.ok("Paciente editado");
+        return ResponseEntity.ok("200");
     }
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity eliminar(@PathVariable Long id){
         pacienteService.eliminar(id);
-        return ResponseEntity.ok("Paciente eliminado");
+        return ResponseEntity.ok("200");
     }
 
     @GetMapping("/lista")
@@ -41,5 +42,11 @@ public class PacienteController {
     public ResponseEntity buscar(@PathVariable String usuario){
         PacienteDTO pacienteDTO = pacienteService.buscar(usuario);
         return ResponseEntity.ok(pacienteDTO);
+    }
+
+    @GetMapping("/search/{id}")
+    public ResponseEntity<PacienteDTO> buscarId(@PathVariable long id){
+        PacienteDTO paciente = pacienteService.buscarId(id);
+        return ResponseEntity.ok(paciente);
     }
 }

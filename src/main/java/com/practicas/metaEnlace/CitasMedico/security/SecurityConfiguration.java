@@ -22,10 +22,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 //@EnableMethodSecurity
 @AllArgsConstructor
 public class SecurityConfiguration {
-   // @Autowired
-    //private UserDetailsService userDetailsService;
-    //@Autowired
-    //private JWT_Filter jwtFilter;
     private final UserDetailsService userDetailsService;
     private final JWT_AuthorizationFilter jwtAuthorizationFilter;
     @Bean
@@ -35,17 +31,17 @@ public class SecurityConfiguration {
         jwtAuthenticationFilter.setFilterProcessesUrl("/login");
 
         return http
+                .cors()
+                .and()
                 .csrf().disable()
                 .httpBasic().disable()
-                .cors().and()
                 .authorizeHttpRequests()
+                .requestMatchers("/").permitAll()
                 .requestMatchers("/login").permitAll()
                 //.requestMatchers("/paciente/**").hasRole("MEDICO")
-                //.requestMatchers("/medico/**").hasRole("MEDICO")
+                //.requestMatchers("/medico/**")//.hasRole("MEDICO")
                 .anyRequest()
                 .authenticated()
-                .and()
-                .httpBasic()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

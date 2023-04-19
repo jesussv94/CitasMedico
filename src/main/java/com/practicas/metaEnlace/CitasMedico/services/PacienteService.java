@@ -5,11 +5,13 @@ import com.practicas.metaEnlace.CitasMedico.entities.Cita;
 import com.practicas.metaEnlace.CitasMedico.entities.Medico;
 import com.practicas.metaEnlace.CitasMedico.entities.Paciente;
 import com.practicas.metaEnlace.CitasMedico.exceptions.DataNotFoundException;
+import com.practicas.metaEnlace.CitasMedico.exceptions.DuplicateDataException;
 import com.practicas.metaEnlace.CitasMedico.mapper.PacienteMapper;
 import com.practicas.metaEnlace.CitasMedico.repositories.CitaRepository;
 import com.practicas.metaEnlace.CitasMedico.repositories.MedicoRepository;
 import com.practicas.metaEnlace.CitasMedico.repositories.PacienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,6 +33,10 @@ public class PacienteService {
 
     public Paciente insertarPaciente(PacienteDTO pacienteDTO) {
         //Validaciones
+        Optional<Paciente> pacienteUsuario = pacienteRepository.findByUsuario(pacienteDTO.getUsuario());
+        if(pacienteUsuario.isPresent()){
+            throw new DuplicateDataException("Nombre de usuario ya existe");
+        }
         //Posibilidad de meterlo en directorio utils
         List<Medico> medicos = new ArrayList<>();
         List<Cita> citas = new ArrayList<>();
@@ -42,24 +48,23 @@ public class PacienteService {
             pacienteDTO.setCitasId(new ArrayList<>());
         }
 
-        if(pacienteDTO.getCitasId().contains(citas)){
-            for(Long citasId : pacienteDTO.getCitasId()){
-                Optional<Cita> citaOpt = citaRepository.findById(citasId);
-            }
-        }
-        if(pacienteDTO.getMedicosId().contains(medicos)){
-            for(Long medicoId : pacienteDTO.getMedicosId()){
-                Optional<Medico> medicoOpt = medicoRepository.findById(medicoId);
-            }
-        }
+        //Codificado de la clave
+        String pass = new BCryptPasswordEncoder().encode(pacienteDTO.getClave());
 
         Paciente paciente = pacienteMapper.toPaciente(pacienteDTO);
+        paciente.setClave(pass);
         paciente.setCitas(citas);
         paciente.setMedicos(medicos);
         return pacienteRepository.save(paciente);
     }
 
     public Paciente editarPaciente(Long id, PacienteDTO pacienteDTO){
+        //Validaciones
+        Optional<Paciente> pacienteUsuario = pacienteRepository.findByUsuario(pacienteDTO.getUsuario());
+        if(pacienteUsuario.isPresent()){
+            throw new DuplicateDataException("Nombre de usuario ya existe");
+        }
+
         List<Medico> medicos = new ArrayList<>();
         List<Cita> citas = new ArrayList<>();
 
@@ -70,7 +75,24 @@ public class PacienteService {
             pacienteDTO.setCitasId(new ArrayList<>());
         }
 
+        if(!pacienteDTO.getMedicosId().isEmpty()){
+            for(Long medicoId: pacienteDTO.getMedicosId()){
+                Optional<Medico> medicoOpt = medicoRepository.findById(medicoId);
+                medicoOpt.ifPresent(medicos::add);
+            }
+        }
+        if(pacienteDTO.getCitasId().isEmpty()){
+            for (Long CitasId: pacienteDTO.getCitasId()){
+                Optional<Cita> citaOpt = citaRepository.findById(CitasId);
+                citaOpt.ifPresent(citas::add);
+            }
+        }
+
+        //Codificado de la clave
+        String pass = new BCryptPasswordEncoder().encode(pacienteDTO.getClave());
+
         Paciente paciente = pacienteMapper.toPaciente(pacienteDTO);
+        paciente.setClave(pass);
         paciente.setMedicos(medicos);
         paciente.setCitas(citas);
         paciente.setId(id);
@@ -89,6 +111,14 @@ public class PacienteService {
 
     public PacienteDTO buscar(String usuario){
         Paciente paciente = pacienteRepository.findByUsuario(usuario).orElse(null);
+        if(paciente == null){
+            throw new DataNotFoundException("Paciente no encontrado");
+        }
+        return pacienteMapper.toPacienteDTO(paciente);
+    }
+
+    public PacienteDTO buscarId(Long id){
+        Paciente paciente = pacienteRepository.findById(id).orElse(null);
         if(paciente == null){
             throw new DataNotFoundException("Paciente no encontrado");
         }

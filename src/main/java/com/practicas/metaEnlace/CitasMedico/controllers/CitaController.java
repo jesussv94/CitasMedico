@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/cita")
+@RequestMapping("api/cita")
 public class CitaController {
     @Autowired
     private CitaService citaService;
@@ -19,7 +19,7 @@ public class CitaController {
     @PostMapping
     public ResponseEntity insertar(@RequestBody CitaDTO citaDTO){
         citaService.insertar(citaDTO);
-        return ResponseEntity.ok("Cita insertada");
+        return ResponseEntity.ok("200");
     }
 
     @GetMapping("/lista")
@@ -31,13 +31,13 @@ public class CitaController {
     @PutMapping("/{id}")
     public ResponseEntity editar(@RequestBody CitaDTO citaDTO, @PathVariable Long id){
         citaService.editarCita(id, citaDTO);
-        return ResponseEntity.ok("Cita editada");
+        return ResponseEntity.ok("200");
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity eliminar(@PathVariable Long id){
         citaService.eliminarCita(id);
-        return ResponseEntity.ok("Cita eliminada");
+        return ResponseEntity.ok("200");
     }
 
     @GetMapping("/{id}")
